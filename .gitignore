@@ -1,0 +1,4 @@
+# Project exclude paths
+SuDoKuDB
+derby.log
+out
