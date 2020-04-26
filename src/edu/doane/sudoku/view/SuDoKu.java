@@ -3,7 +3,9 @@ package edu.doane.sudoku.view;
 import edu.doane.sudoku.controller.DesktopController;
 import edu.doane.sudoku.controller.DesktopTimer;
 import edu.doane.sudoku.controller.SuDoKuController;
+import edu.doane.sudoku.controller.SuDoKuTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -11,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.Optional;
 
@@ -53,6 +56,11 @@ public class SuDoKu extends Application implements SuDoKuUI {
      */
     private UIStatusBar statusBar;
 
+    /**
+     *
+     */
+    private boolean pausedMode;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -77,10 +85,22 @@ public class SuDoKu extends Application implements SuDoKuUI {
         primaryStage.show();
 
         // create and connect controller and timer
-        controller = new DesktopController(this, new DesktopTimer());
+        controller = new DesktopController(this, new DesktopTimer(), statusBar);
 
         // configure key events
         scene.setOnKeyPressed(new UIKeyHandler(cells, controller, statusBar));
+
+        Platform.setImplicitExit(false);
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                event.consume();
+                if (confirmExit() == true) {
+                    Platform.exit();
+                }
+            }
+        });
     }
 
     /**
@@ -139,8 +159,8 @@ public class SuDoKu extends Application implements SuDoKuUI {
      * Create menu bar, menus, and menu items
      */
     private void configureMenus() {
-        Menu mnuGame, mnuHelp;
-        MenuItem mtmNewGame, mtmClearGrid , mtmExit, mtmAbout;
+        Menu mnuGame, mnuHelp, mnuTheme;
+        MenuItem mtmNewGame, mtmClearGrid , mtmExit, mtmAbout, mtmDark, mtmLight;
 
         mnuGame = new Menu("_Game");
         mtmNewGame = new MenuItem("_New game");
@@ -152,6 +172,10 @@ public class SuDoKu extends Application implements SuDoKuUI {
         });
 
         mtmClearGrid = new MenuItem("_Clear grid");
+        mtmClearGrid.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) { controller.resetGrids(); }
+        });
 
         mtmExit = new MenuItem("E_xit");
         mtmExit.setOnAction(new EventHandler<ActionEvent>() {
@@ -175,7 +199,34 @@ public class SuDoKu extends Application implements SuDoKuUI {
 
         mnuHelp.getItems().addAll(mtmAbout);
 
-        mnuBar = new MenuBar(mnuGame, mnuHelp);
+        mnuTheme = new Menu("Theme");
+        mtmDark = new MenuItem("Dark Mode");
+        mtmDark.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for (int row = 0; row < 9; row++) {
+                    for (int col = 0; col < 9; col++) {
+                        cells[row][col].setDarkMode();
+                    }
+                }
+            }
+        });
+
+        mtmLight = new MenuItem("Light Mode");
+        mtmLight.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for (int row = 0; row < 9; row++) {
+                    for (int col = 0; col < 9; col++) {
+                        cells[row][col].setLightMode();
+                    }
+                }
+            }
+        });
+
+        mnuTheme.getItems().addAll(mtmDark, mtmLight);
+
+        mnuBar = new MenuBar(mnuGame, mnuHelp, mnuTheme);
     }
 
     /**
@@ -208,6 +259,7 @@ public class SuDoKu extends Application implements SuDoKuUI {
                 }
                 cells[row][col].clearNumber();
                 cells[row][col].clearAllNotes();
+                UIKeyHandler.setPausedModeOff();
             }
         }
     }
@@ -329,13 +381,13 @@ public class SuDoKu extends Application implements SuDoKuUI {
      * @param time String holding the amount of time taken to win.
      */
     @Override
-    public void celebrate(int id, String time) {
+    public void celebrate(int id, String time, int hints) {
         DesktopAudio.getInstance().playCelebrate();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Winner!");
         alert.setHeaderText(null);
         alert.setContentText("Congratulations! You won game #" +
-                id + " in " + time + "!");
+                id + " in " + time + "! You used " + hints + " total hints!");
         alert.showAndWait();
     }
 

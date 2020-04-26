@@ -58,8 +58,33 @@ public interface SuDoKuController {
     void clearViewGrid();
 
     /**
+     * Pause the game.
+     */
+    void pauseGame();
+
+    /**
+     * Resume the game timer.
+     */
+    void resumeGame();
+
+    /**
      * Remove all non-given numbers, and all notes, from both the
      * model and view grids.
      */
     void resetGrids();
+
+    /**
+     * Give hint.
+     */
+    void getHint();
+
+    /**
+     * Get total hints used.
+     */
+    Integer getTotalHints();
+
+    /**
+     * Is game over?
+     */
+    boolean isGameOver();
 }

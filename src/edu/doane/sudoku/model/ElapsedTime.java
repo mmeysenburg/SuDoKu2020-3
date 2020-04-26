@@ -55,6 +55,16 @@ public class ElapsedTime {
         }
     }
 
+    public void penalty() {
+        int remainder = 0;
+        seconds += 30;
+        if (seconds > 60) {
+            remainder = seconds - 60;
+            minutes++;
+            seconds = remainder;
+        }
+    }
+
     @Override
     /**
      * Get a string representation of the time, in the format "h:mm:ss".

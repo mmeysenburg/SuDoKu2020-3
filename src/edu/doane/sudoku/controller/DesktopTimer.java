@@ -37,7 +37,7 @@ public class DesktopTimer implements SuDoKuTimer {
     public DesktopTimer() {
         elapsedTime = new ElapsedTime();
 
-        timeline = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
+        timeline = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 elapsedTime.tick();
@@ -56,6 +56,9 @@ public class DesktopTimer implements SuDoKuTimer {
     public void stopTimer() {
         timeline.stop();
     }
+
+    @Override
+    public void setTimePenalty() { elapsedTime.penalty(); }
 
     @Override
     public void resetTimer() {

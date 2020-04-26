@@ -4,6 +4,7 @@ import javafx.geometry.HPos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import edu.doane.sudoku.controller.SuDoKuController;
 
 /**
  * Status bar for the Desktop SuDoKu game.
@@ -23,10 +24,32 @@ public class UIStatusBar extends GridPane {
     Label lblNotesMode;
 
     /**
+     * Label displaying paused mode status.
+     */
+    Label lblPausedMode;
+
+    /**
+     * Label displaying total hints used.
+     */
+    Label lblHints;
+
+    /**
+     * Total hints used.
+     */
+    Integer hints;
+
+    /**
+     * Reference to the controller used by the app.
+     */
+    private SuDoKuController controller;
+
+    /**
      * Construct the status bar.
      */
     public UIStatusBar() {
         super();
+
+        hints = 0;
 
         // 2 columns, equally distributed
         ColumnConstraints col1, col2;
@@ -40,10 +63,23 @@ public class UIStatusBar extends GridPane {
         add(lblTimer, 0, 0, 1, 1);
         setHalignment(lblTimer, HPos.CENTER);
 
+        lblHints = new Label("(H)ints used: " + hints);
+        add(lblHints, 0, 0, 1, 1);
+        setHalignment(lblHints, HPos.RIGHT);
+
         lblNotesMode = new Label("(N)otes mode: off");
         add(lblNotesMode, 1, 0, 1, 1);
-        setHalignment(lblNotesMode, HPos.CENTER);
+        setHalignment(lblNotesMode, HPos.RIGHT);
+
+        lblPausedMode = new Label("(P)aused mode: off");
+        add(lblPausedMode, 1, 0, 1,1);
+        setHalignment(lblPausedMode, HPos.CENTER);
     }
+
+    /**
+     * Update total hints count.
+     */
+    public final void incrementHints(Integer hints) { lblHints.setText("(H)ints used:" + hints); }
 
     /**
      * Toggle notes mode on.
@@ -56,7 +92,19 @@ public class UIStatusBar extends GridPane {
      * Toggle notes mode off.
      */
     public final void setNormalMode() {
-        lblNotesMode.setText("(N)otes mode: on");
+        lblNotesMode.setText("(N)otes mode: off");
+    }
+
+    /**
+     * Toggle Paused mode on.
+     */
+    public final void setPausedModeOn() { lblPausedMode.setText("(P)aused mode: on"); }
+
+    /**
+     * Toggle Paused mode off.
+     */
+    public final void setPausedModeOff() {
+        lblPausedMode.setText("(P)aused mode: off");
     }
 
     /**

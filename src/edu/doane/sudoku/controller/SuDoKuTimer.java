@@ -34,6 +34,11 @@ public interface SuDoKuTimer {
     void setView(SuDoKuUI view);
 
     /**
+     * Time Penalty
+     */
+    void setTimePenalty();
+
+    /**
      * Get a string representation of the timer.
      *
      * @return String representation of the current timer, in

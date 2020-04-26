@@ -59,11 +59,11 @@ public interface SuDoKuUI {
 
     /**
      * Celebrate a completed game!
-     *
-     * @param id   ID number of the completed game.
+     *  @param id   ID number of the completed game.
      * @param time String holding the amount of time taken to win.
+     * @param hints
      */
-    void celebrate(int id, String time);
+    void celebrate(int id, String time, int hints);
 
     /**
      * Confirm that the player really wants to exit the game.

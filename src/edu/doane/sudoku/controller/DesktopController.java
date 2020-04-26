@@ -1,9 +1,12 @@
 package edu.doane.sudoku.controller;
 
+import edu.doane.sudoku.model.Cell;
 import edu.doane.sudoku.model.Game;
 import edu.doane.sudoku.model.GameGrid;
 import edu.doane.sudoku.persistence.Persistence;
+import edu.doane.sudoku.view.DesktopAudio;
 import edu.doane.sudoku.view.SuDoKuUI;
+import edu.doane.sudoku.view.UIStatusBar;
 
 /**
  * Implementation of the controller interface for the desktop app.
@@ -40,15 +43,26 @@ public class DesktopController implements SuDoKuController {
     private boolean celebrated;
 
     /**
+     * Total Hints Used
+     */
+    public int hints = 0;
+
+    /**
+     * Game status var.
+     */
+    private UIStatusBar pnlStatusBar;
+
+    /**
      * Construct a new instance of this controller.
      *
      * @param view  SuDoKuUI view to be controlled.
      * @param timer SuDoKuTimer object to keep track of game time
      */
-    public DesktopController(SuDoKuUI view, SuDoKuTimer timer) {
+    public DesktopController(SuDoKuUI view, SuDoKuTimer timer, UIStatusBar pnlStatusBar) {
         // "wire up" the MVC references
         this.view = view;
         this.timer = timer;
+        this.pnlStatusBar = pnlStatusBar;
         timer.setView(view);
 
         // when constructed, i.e., on app start, load the next game we 
@@ -105,8 +119,12 @@ public class DesktopController implements SuDoKuController {
             // celebrate! and stop the timer
             celebrated = true;
             timer.stopTimer();
-            view.celebrate(game.getID(), timer.toString());
+            view.celebrate(game.getID(), timer.toString(), hints);
         }
+    }
+
+    public boolean isGameOver() {
+        return celebrated;
     }
 
     @Override
@@ -119,6 +137,9 @@ public class DesktopController implements SuDoKuController {
             // move on to next game, reset celbration flag and timer
             setNextGame();
             celebrated = false;
+            hints = 0;
+            pnlStatusBar.incrementHints(hints);
+            pnlStatusBar.setPausedModeOff();
             timer.resetTimer();
         }
         // start timer again
@@ -146,6 +167,34 @@ public class DesktopController implements SuDoKuController {
         } // for i
 
     }
+
+    public void getHint() {
+        if (!grid.isOneLeft()) {
+
+            GameGrid grid2 = game.getSolved();
+
+            int i;
+            int j;
+
+            do {
+                i = (int) (Math.floor((Math.random() * 9)));
+                j = (int) (Math.floor((Math.random() * 9)));
+            } while (grid.isGiven(i, j) == true);
+
+            grid.setGivenData(i, j, grid2.getNumber(i, j));
+            view.setGiven(i, j, grid2.getNumber(i, j));
+            DesktopAudio.getInstance().playhintUsed();
+            timer.setTimePenalty();
+            hints++;
+        }
+
+    }
+
+    public Integer getTotalHints() { return hints; }
+
+    public void pauseGame() { timer.stopTimer(); }
+
+    public void resumeGame() { timer.startTimer(); }
 
     @Override
     public void setNote(int row, int col, int number) {
@@ -184,7 +233,8 @@ public class DesktopController implements SuDoKuController {
     @Override
     public void displayAbout() {
         // stop timer
-        timer.stopTimer();
+        this.pauseGame();
+        pnlStatusBar.setPausedModeOn();
 
         // show about box
         view.displayAbout();
@@ -192,7 +242,8 @@ public class DesktopController implements SuDoKuController {
         // restart timer after box is closed (if we are still
         // playing)
         if (!celebrated) {
-            timer.startTimer();
+            this.resumeGame();
+            pnlStatusBar.setPausedModeOff();
         }
     }
 
@@ -203,23 +254,27 @@ public class DesktopController implements SuDoKuController {
 
     @Override
     public void resetGrids() {
-        // first zap everything on the view
-        view.clearGrid(false);
 
-        // then remove non-given numbers
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                if (!grid.isGiven(row, col)) {
-                    grid.unsetNumber(row, col);
+        if (!celebrated) {
+
+            // first zap everything on the view
+            view.clearGrid(false);
+
+            // then remove non-given numbers
+            for (int row = 0; row < 9; row++) {
+                for (int col = 0; col < 9; col++) {
+                    if (!grid.isGiven(row, col)) {
+                        grid.unsetNumber(row, col);
+                    }
                 }
             }
-        }
 
-        // finally, display the givens on the view
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (grid.isGiven(i, j)) {
-                    view.setGiven(i, j, grid.getNumber(i, j));
+            // finally, display the givens on the view
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    if (grid.isGiven(i, j)) {
+                        view.setGiven(i, j, grid.getNumber(i, j));
+                    }
                 }
             }
         }

@@ -51,6 +51,11 @@ public class DesktopAudio {
     private MediaPlayer playNumberMedia;
 
     /**
+     * Media for playing hint used.
+     */
+    private MediaPlayer hintUsedMedia;
+
+    /**
      * Private default constructor prevents users from instantiating.
      */
     private DesktopAudio() {
@@ -84,6 +89,11 @@ public class DesktopAudio {
             Media media6 = new Media(ClassLoader.getSystemResource("resources/audio/play-number.wav").toURI().toString());
             playNumberMedia = new MediaPlayer(media6);
             playNumberMedia.setAutoPlay(false);
+
+            // hint-used media
+            Media media7 = new Media(ClassLoader.getSystemResource("resources/audio/hint-used.mp3").toURI().toString());
+            hintUsedMedia = new MediaPlayer(media7);
+            hintUsedMedia.setAutoPlay(false);
 
         } catch (Exception exception) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -169,6 +179,17 @@ public class DesktopAudio {
             playNumberMedia.stop();
             playNumberMedia.setStartTime(Duration.seconds(0));
             playNumberMedia.play();
+        }
+    }
+
+    /**
+     * Play the hint sad sound.
+     */
+    public void playhintUsed() {
+        if (hintUsedMedia != null) {
+            hintUsedMedia.stop();
+            hintUsedMedia.setStartTime(Duration.seconds(0));
+            hintUsedMedia.play();
         }
     }
 }

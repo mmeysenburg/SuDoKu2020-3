@@ -153,6 +153,30 @@ public class GameGrid {
     }
 
     /**
+     * Is this grid complete (i.e., all filled in)?
+     *
+     * @return true if the grid is complete, false otherwise.
+     */
+    public boolean isOneLeft() {
+
+        int count = 0;
+
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (grid[row][col].getNumber() == 0) {
+                    count++;
+                }
+            } // col
+        } // row
+
+        if (count == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Remove all non-given numbers from this grid. Also removes notes from all
      * the cells.
      */
@@ -231,6 +255,12 @@ public class GameGrid {
                 k++;
             } // for col
         } // for row
+    }
+
+    public void setGivenData(int row, int col, int number)
+    {
+        setNumber(row, col, number);
+        grid[row][col].setIsGiven(true);
     }
 
     /**

@@ -11,10 +11,16 @@ import javafx.scene.input.KeyEvent;
  * @version 1/11/2020
  */
 public class UIKeyHandler implements EventHandler<KeyEvent> {
+
     /**
      * Flag telling if we're in note entry mode or not.
      */
     private boolean notesMode;
+
+    /**
+     * Flag telling if the game is paused or not.
+     */
+    private static boolean pausedMode;
 
     /**
      * Reference to the cells in the user interface.
@@ -41,47 +47,77 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
     public UIKeyHandler(UICell[][] cells, SuDoKuController controller, UIStatusBar pnlStatusBar) {
         this.cells = cells;
         this.controller = controller;
-        notesMode = false;
         this.pnlStatusBar = pnlStatusBar;
+
+        notesMode = false;
+        pausedMode = false;
+    }
+
+    public static void setPausedModeOff() {
+        pausedMode = false;
     }
 
     @Override
     public void handle(KeyEvent event) {
         // get the character typed
-        char c = event.getCharacter().charAt(0);
+        char c = event.getText().charAt(0);
 
-        // and handle the input
-        switch (c) {
-            // n toggles notes mode
-            case 'n':
-            case 'N':
-                notesMode = !notesMode;
-                setNotesOrNormal();
+        if (!controller.isGameOver()) {
 
-                break;
-            // 1 - 9 sets number or note
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                if (notesMode) {
-                    setNote(c);
-                } else {
-                    setNumber(c);
-                }
-                break;
+            // and handle the input
+            switch (c) {
 
-            // space clears number from cell
-            case ' ':
-                if (!notesMode) {
-                    setNumber(' ');
-                }
-                break;
+                // n toggles notes mode
+                case 'n':
+                case 'N':
+                    if (!pausedMode) {
+                        notesMode = !notesMode;
+                        setNotesOrNormal();
+                    }
+
+                    break;
+
+                // p toggles paused mode
+                case 'p':
+                case 'P':
+                    pausedMode = !pausedMode;
+                    setPausedMode();
+
+                    break;
+
+                // h toggles giving hint
+                case 'h':
+                case 'H':
+                    if (!pausedMode) {
+                        controller.getHint();
+                        pnlStatusBar.incrementHints(controller.getTotalHints());
+                    }
+                    break;
+
+                // 1 - 9 sets number or note
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    if (notesMode && !pausedMode) {
+                        setNote(c);
+                    } else if (!pausedMode) {
+                        setNumber(c);
+                    }
+                    break;
+
+                // space clears number from cell
+                case ' ':
+                    if (!notesMode && !pausedMode) {
+                        setNumber(' ');
+                    }
+                    break;
+            }
         }
     }
 
@@ -125,6 +161,22 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
             pnlStatusBar.setNormalMode();
         }
     }
+
+    /**
+     * Toggle between paused and normal mode
+     */
+    public void setPausedMode() {
+
+        // update status bar to indicate paused mode status
+        if (pausedMode) {
+            controller.pauseGame();
+            pnlStatusBar.setPausedModeOn();
+        } else {
+            controller.resumeGame();
+            pnlStatusBar.setPausedModeOff();
+        }
+    }
+
     /**
      * Cause a number to be set in the selected cell.
      *

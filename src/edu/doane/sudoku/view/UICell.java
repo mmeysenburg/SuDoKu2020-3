@@ -74,6 +74,11 @@ public class UICell extends BorderPane implements EventHandler<MouseEvent> {
     private Label[] lblNotes;
 
     /**
+     * Set label color of cell
+     */
+    private Color labelcolor = Color.BLUE;
+
+    /**
      * Set up an empty, no-notes, un-selected cell.
      */
     public UICell() {
@@ -122,6 +127,8 @@ public class UICell extends BorderPane implements EventHandler<MouseEvent> {
         setTop(top);
         setRight(right);
 
+        labelcolor = Color.BLUE;
+
         // set initial background and number value
         background = normalBackground;
         setBackground(background);
@@ -129,7 +136,7 @@ public class UICell extends BorderPane implements EventHandler<MouseEvent> {
         num = "0";
         lblNumber = new Label(num);
         lblNumber.setFont(Font.font("ArialBold", 20));
-        lblNumber.setTextFill(Color.BLUE);
+        lblNumber.setTextFill(labelcolor);
         setCenter(lblNumber);
 
         // set initial flags for our modes
@@ -146,15 +153,47 @@ public class UICell extends BorderPane implements EventHandler<MouseEvent> {
     /**
      * Turn on notes-entry mode.
      */
-    public void setNotesMode() {
-        notesMode = true;
-    }
+    public void setNotesMode() { notesMode = true; }
 
     /**
      * Turn off notes-entering mode.
      */
     public void setNormalMode() {
         notesMode = false;
+    }
+
+    /**
+     * Turn off light mode
+     */
+    public void setDarkMode() {
+        normalBackground = new Background(
+                new BackgroundFill(Color.GREY, null, null));
+
+        selectedBackground = new Background(
+                new BackgroundFill(Color.LIGHTGRAY, null, null));
+
+        notesBackground = new Background(
+                new BackgroundFill(Color.LIGHTCORAL, null, null));
+
+        background = normalBackground;
+        setBackground(background);
+    }
+
+    /**
+     * Turn off dark mode
+     */
+    public void setLightMode() {
+        normalBackground = new Background(
+                new BackgroundFill(Color.LIGHTGRAY, null, null));
+
+        selectedBackground = new Background(
+                new BackgroundFill(Color.LAVENDERBLUSH, null, null));
+
+        notesBackground = new Background(
+                new BackgroundFill(Color.LIGHTPINK, null, null));
+
+        background = normalBackground;
+        setBackground(background);
     }
 
     /**
@@ -212,7 +251,7 @@ public class UICell extends BorderPane implements EventHandler<MouseEvent> {
      */
     public void unsetGiven() {
         isGiven = false;
-        lblNumber.setTextFill(Color.BLUE);
+        lblNumber.setTextFill(labelcolor);
     }
 
     /**
