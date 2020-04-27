@@ -2,7 +2,11 @@ package edu.doane.sudoku.view;
 
 import edu.doane.sudoku.controller.SuDoKuController;
 import javafx.event.EventHandler;
+import javafx.scene.control.MenuBar;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
+
+import java.net.URISyntaxException;
 
 /**
  * Class to handle keyboard input in the desktop SuDoKu game.
@@ -48,7 +52,6 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
         this.cells = cells;
         this.controller = controller;
         this.pnlStatusBar = pnlStatusBar;
-
         notesMode = false;
         pausedMode = false;
     }
@@ -166,6 +169,8 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
      * Toggle between paused and normal mode
      */
     public void setPausedMode() {
+
+        SuDoKu su = new SuDoKu();
 
         // update status bar to indicate paused mode status
         if (pausedMode) {

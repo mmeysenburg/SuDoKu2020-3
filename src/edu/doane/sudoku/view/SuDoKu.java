@@ -3,18 +3,18 @@ package edu.doane.sudoku.view;
 import edu.doane.sudoku.controller.DesktopController;
 import edu.doane.sudoku.controller.DesktopTimer;
 import edu.doane.sudoku.controller.SuDoKuController;
-import edu.doane.sudoku.controller.SuDoKuTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
 import java.util.Optional;
 
 /**
@@ -56,11 +56,6 @@ public class SuDoKu extends Application implements SuDoKuUI {
      */
     private UIStatusBar statusBar;
 
-    /**
-     *
-     */
-    private boolean pausedMode;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -73,15 +68,17 @@ public class SuDoKu extends Application implements SuDoKuUI {
         // set up the status bar
         statusBar = new UIStatusBar();
 
+        StackPane root = new StackPane();
+        root.setAlignment(Pos.CENTER);
+
         // configure main UI
-        Scene scene = new Scene(new VBox(), 800, 800);
+        Scene scene = new Scene(new VBox(root), 800, 800);
         grid.setPrefSize(800, 800);
         grid.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         ((VBox) scene.getRoot()).getChildren().addAll(mnuBar, grid, statusBar);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Doane SuDoKu");
 
-        // display the UI
+        primaryStage.setTitle("Doane SuDoKu");
+        primaryStage.setScene(scene);
         primaryStage.show();
 
         // create and connect controller and timer
@@ -306,6 +303,73 @@ public class SuDoKu extends Application implements SuDoKuUI {
         }
 
         cells[row][col].setGiven(n);
+    }
+
+    /**
+     * Set a given at the specified location.
+     *
+     * @param row    Row of the given to set.
+     * @param col    Column of the given to set.
+     * @param number Given value to place in the specified location.
+     */
+    public void resetColor(int row, int col, int number) {
+        char n = '0';
+        switch(number) {
+            case 1:
+                n = '1'; break;
+            case 2:
+                n = '2'; break;
+            case 3:
+                n = '3'; break;
+            case 4:
+                n = '4'; break;
+            case 5:
+                n = '5'; break;
+            case 6:
+                n = '6'; break;
+            case 7:
+                n = '7'; break;
+            case 8:
+                n = '8'; break;
+            case 9:
+                n = '9'; break;
+        }
+
+        cells[row][col].resetColor(n);
+    }
+
+    /**
+     * Set a given at the specified location.
+     *
+     * @param row    Row of the given to set.
+     * @param col    Column of the given to set.
+     * @param number Given value to place in the specified location.
+     */
+    @Override
+    public void hideGiven(int row, int col, int number) {
+        char n = '0';
+        switch(number) {
+            case 1:
+                n = '1'; break;
+            case 2:
+                n = '2'; break;
+            case 3:
+                n = '3'; break;
+            case 4:
+                n = '4'; break;
+            case 5:
+                n = '5'; break;
+            case 6:
+                n = '6'; break;
+            case 7:
+                n = '7'; break;
+            case 8:
+                n = '8'; break;
+            case 9:
+                n = '9'; break;
+        }
+
+        cells[row][col].hideGiven(n);
     }
 
     /**

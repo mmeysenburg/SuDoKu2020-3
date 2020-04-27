@@ -246,6 +246,13 @@ public class UICell extends BorderPane implements EventHandler<MouseEvent> {
         lblNumber.setText(num);
     }
 
+    public void hideGiven(char number) {
+        isGiven = true;
+        num = Character.toString(number);
+        lblNumber.setTextFill(Color.TRANSPARENT);
+        lblNumber.setText(num);
+    }
+
     /**
      * Remove the "given" status of the cell.
      */
@@ -269,6 +276,13 @@ public class UICell extends BorderPane implements EventHandler<MouseEvent> {
      */
     public void clearNumber() {
         num = "";
+        lblNumber.setText(num);
+    }
+
+    public void resetColor(char number) {
+        isGiven = false;
+        num = Character.toString(number);
+        lblNumber.setTextFill(Color.BLUE);
         lblNumber.setText(num);
     }
 

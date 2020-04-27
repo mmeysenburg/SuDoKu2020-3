@@ -1,5 +1,10 @@
 package edu.doane.sudoku.view;
 
+import javafx.scene.control.MenuBar;
+import javafx.stage.Stage;
+
+import java.net.URISyntaxException;
+
 /**
  * Interface for instances of the view (UI) in the Doane SuDoKu MVC architecture.
  *
@@ -84,4 +89,8 @@ public interface SuDoKuUI {
      * Display the modal "About Doane SuDoKu" dialog box.
      */
     void displayAbout();
+
+    void hideGiven(int row, int col, int number);
+
+    void resetColor(int row, int col, int number);
 }

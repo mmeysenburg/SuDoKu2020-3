@@ -63,6 +63,11 @@ public class ElapsedTime {
             minutes++;
             seconds = remainder;
         }
+        if (minutes > 59) {
+            remainder = minutes - 60;
+            hours++;
+            minutes = remainder;
+        }
     }
 
     @Override

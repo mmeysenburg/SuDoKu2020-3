@@ -52,6 +52,8 @@ public class DesktopController implements SuDoKuController {
      */
     private UIStatusBar pnlStatusBar;
 
+    private boolean isPaused = false;
+
     /**
      * Construct a new instance of this controller.
      *
@@ -190,11 +192,43 @@ public class DesktopController implements SuDoKuController {
 
     }
 
+    public void pauseGame() {
+
+        timer.stopTimer();
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (grid.isGiven(i, j)) {
+                    view.hideGiven(i, j, grid.getNumber(i, j));
+                } else {
+                    if (grid.getNumber(i, j) != 0) {
+                        view.hideGiven(i, j, grid.getNumber(i, j));
+                    }
+                }
+            } // for j
+        } // for i
+    }
+
+    public void resumeGame()
+    {
+        timer.startTimer();
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (grid.isGiven(i, j)) {
+                    view.setGiven(i, j, grid.getNumber(i, j));
+                } else {
+                    if (grid.getNumber(i, j) != 0) {
+                        view.resetColor(i, j, grid.getNumber(i, j));
+                    }
+                }
+            } // for j
+        } // for i
+    }
+
     public Integer getTotalHints() { return hints; }
 
-    public void pauseGame() { timer.stopTimer(); }
-
-    public void resumeGame() { timer.startTimer(); }
+    public boolean pausedState() { return isPaused;}
 
     @Override
     public void setNote(int row, int col, int number) {
