@@ -120,10 +120,10 @@ public class DesktopAudio {
      * Play the win game sound.
      */
     public void playCelebrate() {
-        if(playNumberMedia != null) {
-            playNumberMedia.stop();
-            playNumberMedia.setStartTime(Duration.seconds(0));
-            playNumberMedia.play();
+        if(celebrateMedia != null) {
+            celebrateMedia.stop();
+            celebrateMedia.setStartTime(Duration.seconds(0));
+            celebrateMedia.play();
         }
     }
 

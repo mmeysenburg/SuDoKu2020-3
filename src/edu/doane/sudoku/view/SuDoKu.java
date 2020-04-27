@@ -93,7 +93,7 @@ public class SuDoKu extends Application implements SuDoKuUI {
             @Override
             public void handle(WindowEvent event) {
                 event.consume();
-                if (confirmExit() == true) {
+                if (confirmExit()) {
                     Platform.exit();
                 }
             }

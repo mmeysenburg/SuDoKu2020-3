@@ -124,7 +124,7 @@ public class DesktopController implements SuDoKuController {
             // celebrate! and stop the timer
             celebrated = true;
             timer.stopTimer();
-            DesktopAudio.getInstance().playCelebrate(); // play sad hint noise
+            DesktopAudio.getInstance().playCelebrate();
             view.celebrate(game.getID(), timer.toString(), hints);
         }
     }
