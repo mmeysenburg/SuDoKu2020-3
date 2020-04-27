@@ -55,6 +55,9 @@ public class ElapsedTime {
         }
     }
 
+    /**
+     * Time penalty is added here when a hint is used.
+     */
     public void penalty() {
         int remainder = 0;
         seconds += 30;

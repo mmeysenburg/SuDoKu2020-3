@@ -90,7 +90,21 @@ public interface SuDoKuUI {
      */
     void displayAbout();
 
+    /**
+     * Hide a given value at a specified location.
+     *
+     * @param row    Row of the given to set.
+     * @param col    Column of the given to set.
+     * @param number Given value to place in the specified location.
+     */
     void hideGiven(int row, int col, int number);
 
+    /**
+     * Set color for a value at a specified location.
+     *
+     * @param row    Row of the given to set.
+     * @param col    Column of the given to set.
+     * @param number Given value to place in the specified location.
+     */
     void resetColor(int row, int col, int number);
 }

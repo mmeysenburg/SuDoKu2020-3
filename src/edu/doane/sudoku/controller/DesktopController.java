@@ -1,12 +1,12 @@
 package edu.doane.sudoku.controller;
 
-import edu.doane.sudoku.model.Cell;
 import edu.doane.sudoku.model.Game;
 import edu.doane.sudoku.model.GameGrid;
 import edu.doane.sudoku.persistence.Persistence;
 import edu.doane.sudoku.view.DesktopAudio;
 import edu.doane.sudoku.view.SuDoKuUI;
 import edu.doane.sudoku.view.UIStatusBar;
+import edu.doane.sudoku.view.UIKeyHandler;
 
 /**
  * Implementation of the controller interface for the desktop app.
@@ -52,6 +52,9 @@ public class DesktopController implements SuDoKuController {
      */
     private UIStatusBar pnlStatusBar;
 
+    /**
+     * Flag indicating the current game paused status.
+     */
     private boolean isPaused = false;
 
     /**
@@ -121,10 +124,15 @@ public class DesktopController implements SuDoKuController {
             // celebrate! and stop the timer
             celebrated = true;
             timer.stopTimer();
+            DesktopAudio.getInstance().playCelebrate(); // play sad hint noise
             view.celebrate(game.getID(), timer.toString(), hints);
         }
     }
 
+    /**
+     * Determine if the game is over.
+     * @return celebrated
+     */
     public boolean isGameOver() {
         return celebrated;
     }
@@ -170,10 +178,14 @@ public class DesktopController implements SuDoKuController {
 
     }
 
+    /**
+     * Get hint if their is more than once space left on the board.
+     * Position on board is chosen at random.
+     */
     public void getHint() {
-        if (!grid.isOneLeft()) {
+        if (!grid.isOneLeft()) { // check if there is one space left on the board
 
-            GameGrid grid2 = game.getSolved();
+            GameGrid grid2 = game.getSolved(); // get the solved game grid.
 
             int i;
             int j;
@@ -181,20 +193,25 @@ public class DesktopController implements SuDoKuController {
             do {
                 i = (int) (Math.floor((Math.random() * 9)));
                 j = (int) (Math.floor((Math.random() * 9)));
-            } while (grid.isGiven(i, j) == true);
+            } while (grid.isGiven(i, j) == true); // check if coordinates are of a given number.
 
-            grid.setGivenData(i, j, grid2.getNumber(i, j));
-            view.setGiven(i, j, grid2.getNumber(i, j));
-            DesktopAudio.getInstance().playhintUsed();
-            timer.setTimePenalty();
-            hints++;
+            grid.setGivenData(i, j, grid2.getNumber(i, j)); // set given data at position
+            view.setGiven(i, j, grid2.getNumber(i, j));  // set number in view
+            DesktopAudio.getInstance().playhintUsed(); // play sad hint noise
+            timer.setTimePenalty(); // add penalty to time elapsed
+            hints++; // increment total hints used
         }
 
     }
 
+    /**
+     * Paused game & hide game numbers.
+     */
     public void pauseGame() {
 
         timer.stopTimer();
+
+        isPaused = true;
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -209,9 +226,14 @@ public class DesktopController implements SuDoKuController {
         } // for i
     }
 
+    /**
+     * Resume game.
+     */
     public void resumeGame()
     {
         timer.startTimer();
+
+        isPaused = false;
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -226,8 +248,14 @@ public class DesktopController implements SuDoKuController {
         } // for i
     }
 
+    /**
+     * Return the total hints used.
+     */
     public Integer getTotalHints() { return hints; }
 
+    /**
+     * Return the current paused state of the game.
+     */
     public boolean pausedState() { return isPaused;}
 
     @Override
@@ -267,16 +295,19 @@ public class DesktopController implements SuDoKuController {
     @Override
     public void displayAbout() {
         // stop timer
-        this.pauseGame();
-        pnlStatusBar.setPausedModeOn();
+        if (!celebrated) {
+            this.pauseGame();
+            pnlStatusBar.setPausedModeOn();
+        }
 
         // show about box
         view.displayAbout();
 
         // restart timer after box is closed (if we are still
         // playing)
-        if (!celebrated) {
+        if (!celebrated && !UIKeyHandler.isGamePaused()) {
             this.resumeGame();
+            UIKeyHandler.setPausedModeOff();
             pnlStatusBar.setPausedModeOff();
         }
     }
@@ -289,7 +320,7 @@ public class DesktopController implements SuDoKuController {
     @Override
     public void resetGrids() {
 
-        if (!celebrated) {
+        if (!celebrated && !UIKeyHandler.isGamePaused()) {
 
             // first zap everything on the view
             view.clearGrid(false);

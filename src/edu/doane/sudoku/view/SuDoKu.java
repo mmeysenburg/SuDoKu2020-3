@@ -306,7 +306,7 @@ public class SuDoKu extends Application implements SuDoKuUI {
     }
 
     /**
-     * Set a given at the specified location.
+     * Reset color at the specified location.
      *
      * @param row    Row of the given to set.
      * @param col    Column of the given to set.
@@ -339,7 +339,7 @@ public class SuDoKu extends Application implements SuDoKuUI {
     }
 
     /**
-     * Set a given at the specified location.
+     * Hide given value at the specified location.
      *
      * @param row    Row of the given to set.
      * @param col    Column of the given to set.

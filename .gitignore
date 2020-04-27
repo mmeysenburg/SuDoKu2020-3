@@ -2,3 +2,7 @@
 SuDoKuDB
 derby.log
 out
+.idea/misc.xml
+src/.DS_Store
+.DS_Store
+src/resources/.DS_Store

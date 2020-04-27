@@ -22,7 +22,7 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
     private boolean notesMode;
 
     /**
-     * Flag telling if the game is paused or not.
+     * Flag telling if the game is in paused mode.
      */
     private static boolean pausedMode;
 
@@ -56,16 +56,24 @@ public class UIKeyHandler implements EventHandler<KeyEvent> {
         pausedMode = false;
     }
 
+    /**
+     * Disabled paused mode.
+     */
     public static void setPausedModeOff() {
         pausedMode = false;
     }
+
+    /**
+     * Disabled paused mode.
+     */
+    public static boolean isGamePaused() { return pausedMode; }
 
     @Override
     public void handle(KeyEvent event) {
         // get the character typed
         char c = event.getText().charAt(0);
 
-        if (!controller.isGameOver()) {
+        if (!controller.isGameOver()) { // check if the game has ended
 
             // and handle the input
             switch (c) {
